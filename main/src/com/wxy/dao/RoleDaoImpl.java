@@ -8,8 +8,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class RoleDaoImpl implements RoleDao{
     private static Connection conn;
@@ -99,7 +102,83 @@ public class RoleDaoImpl implements RoleDao{
     }
 
     @Override
-    public int insertCartById(int productId, int r_id) {
+    public int insertCartById(int productId, int user_id) {
+        conn = JdbcUtils.getConnection();
+        int res = 0;
+        Date date = new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String sql = "insert into cart(user_id,pro_id,cart_time) VALUES(?,?,?)";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,user_id);
+            ps.setInt(2,productId);
+            ps.setString(3,df.format(date));
+
+            res = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return res;
+    }
+
+    //    1、生成账单
+//    2、清空购物车
+    @Override
+    public int dealCartAndIndent(int user_id, int productId) {
+        conn = JdbcUtils.getConnection();
+//        存在的因素，是否有多个商品结算，存在多条记录
+//                  1个商家 1几个地址，只需要一条记录
+
+//        订单编号
+        String ind_id = "";
+//        1、统计购买的数量和金额
+        int cartNum = 0;
+        double cartMoney = 0;
+        String sql = "select sum(cart_money),count(cart_id) from cart WHERE user_id = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,user_id);
+            rs =  ps.executeQuery();
+            if (!rs.next()){
+                System.out.println("你尚未添加任何商品，请先添加至购物车或者直接购买");
+            }else {
+                cartNum = rs.getInt(2);
+                cartMoney = rs.getDouble(1);
+//                根据不同的商品编号找到不同的商家，进行统计分类(忽略)
+
+//                通过user_id获取一下地址
+
+//                生成订单，然后清除购物车
+                sql = "insert into indent(ind_id,user_id,ind_money,ind_state) values(?,?,?,?)";
+                Date date = new Date();
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+                ind_id = UUID.randomUUID()+ df.format(date);
+
+                ps = conn.prepareStatement(sql);
+                ps.setString(1,ind_id);
+                ps.setInt(2,user_id);
+                ps.setDouble(3,cartMoney);
+                ps.setInt(4,1);
+
+                int intIndent = ps.executeUpdate();
+                if (intIndent>0){
+//                    清除购物车
+                    sql = "DELETE FROM cart WHERE user_id = ?";
+                    ps = conn.prepareStatement(sql);
+                    ps.setInt(1,user_id);
+                    int cartRes = ps.executeUpdate();
+                    if (cartRes != cartNum){
+                        return 0;
+                    }else {
+                        return cartNum;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 

@@ -32,8 +32,13 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public int  insertCart(int productId, int r_id) {
-        return roleDao.insertCartById(productId,r_id);
+    public int insertCart(int productId, int user_id) {
+        return roleDao.insertCartById(productId,user_id);
+    }
+
+    @Override
+    public int clearCart(int r_id, int productId) {
+        return roleDao.dealCartAndIndent(r_id,productId);
     }
 
 

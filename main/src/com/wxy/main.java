@@ -7,13 +7,13 @@ import com.wxy.service.RoleServiceImpl;
 import org.junit.Before;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Scanner;
 
 public class main {
 
-//    public static HttpServletResquest resquest;
-
+    public static HttpServletRequest request;
     public static void main(String[] args) {
 
         RoleService roleService = new RoleServiceImpl();
@@ -66,7 +66,14 @@ public class main {
         }
 
         //加入购物车
-        addCart(role);
+        System.out.println("1、添加购物车  2、前往下单");
+        int i = sc.nextInt();
+        if (i == 1){
+            //        加入购物车
+            addCart(role);
+        }else {
+            goToCheckOut(role,2101013);
+        }
 
 
     }
@@ -81,17 +88,36 @@ public class main {
         System.out.print("请输入商品ID：");
         int productId = sc.nextInt();
         int res = roleService.insertCart(productId,role.getR_id());
-        if (res >= 1) {
+        if (res >= 1 ){
             System.out.println("添加成功");
             System.out.println("1、继续添加商品  2、前往下单");
-        }
-        else {
-            System.out.println("添加失败,请重新选购商品");
+            int i = sc.nextInt();
+            switch (i){
+                case 1:
+//                    已经加入购物车内容，可以显示出来
+                    addCart(role);
+                    break;
+                case 2:
+//                    下单(用户编号，地址，付款金额，商家发货地址)
+                    goToCheckOut(role,productId);
+            }
+        }else{
+            System.out.println("添加失败，请重新选择");
+            addCart(role);
         }
     }
-    @Before
-    public void Test(){
-        System.out.println("前置方法");
+
+    private static void goToCheckOut(Role role, int productId) {
+        RoleService roleService = new RoleServiceImpl();
+        Scanner sc = new Scanner(System.in);
+
+        int clearRes = roleService.clearCart(role.getR_id(),productId);
+        if (clearRes>0){
+            System.out.println("下单成功，订单号为：" + 122222222);
+//            如果需要打印订单号 ，根据user_id查询订单表，获取订单信息
+        }else {
+            System.out.println("下单失败，请重新处理");
+        }
     }
 
 

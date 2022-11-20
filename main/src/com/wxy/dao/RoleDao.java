@@ -9,5 +9,7 @@ public interface RoleDao {
     Role selectRoleByUsernameAndPassword(String username,String password);
     public List showAllProduct();
 
-    int  insertCartById(int productId, int r_id);
+    int insertCartById(int productId, int user_id);
+
+    int dealCartAndIndent(int user_id, int productId);
 }
