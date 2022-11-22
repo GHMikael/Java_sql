@@ -1,6 +1,7 @@
 package com.wxy.dao;
 
 import com.wxy.bean.Cart;
+import com.wxy.bean.Comment;
 import com.wxy.bean.Product;
 import com.wxy.bean.Role;
 import com.wxy.utils.JdbcUtils;
@@ -230,6 +231,33 @@ public class RoleDaoImpl implements RoleDao {
             e.printStackTrace();
         }
         return carts;
+    }
+
+    @Override
+    public List<Comment> selectAllComments() {
+        List<Comment> comments = new ArrayList<>();
+        conn = JdbcUtils.getConnection();
+
+        //编写数据库语句
+        String sql = "select * from comment";
+
+        //执行sql语句
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery(sql);
+            while (rs.next()) {
+                Comment comment = new Comment();
+                comment.setId(rs.getInt(1));
+                comment.setRole_id(rs.getInt(2));
+                comment.setStates(rs.getString(5));
+                comment.setProduct_name(rs.getString(3));
+                comment.setContent(rs.getString(4));
+                comments.add(comment);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comments;
     }
 
 }

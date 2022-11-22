@@ -1,6 +1,7 @@
 package com.wxy;
 
 import com.wxy.bean.Cart;
+import com.wxy.bean.Comment;
 import com.wxy.bean.Product;
 import com.wxy.bean.Role;
 import com.wxy.service.RoleService;
@@ -9,6 +10,8 @@ import com.wxy.service.RoleServiceImpl;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -66,21 +69,27 @@ public class main {
             System.out.println(product.toString());
         }
 
+        Date date = new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+        int productId = Integer.parseInt(df.format(date));
         //加入购物车
-        System.out.println("1、添加购物车  2、清空购物车");
+        System.out.println("1、添加购物车  2、清空购物车  3、进行订单的评论");
         int i = sc.nextInt();
         if (i == 1){
-            //        加入购物车
+            //加入购物车
             addCart(role);
-        }else {
-            goToCheckOut(role,2101013);
+        }
+        else if(i == 2) {
+            goToCheckOut(role,productId);
+        }
+        else if (i == 3) {
+            goToComment(role);
         }
 
 
     }
 
     //单独封装
-
     public static void addCart(Role role){
         //加入购物车
         RoleService roleService = new RoleServiceImpl();
@@ -120,14 +129,27 @@ public class main {
         RoleService roleService = new RoleServiceImpl();
         Scanner sc = new Scanner(System.in);
 
+        Date date = new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+        String first = df.format(date);
         int clearRes = roleService.clearCart(role.getR_id(),productId);
         if (clearRes>0){
-            System.out.println("购买成功，订单号为：" + productId);
+            System.out.println("购买成功，订单号为：" + first + productId + "\t合计" + clearRes + "个订单");
 //            如果需要打印订单号 ，根据user_id查询订单表，获取订单信息
         }else {
             System.out.println("购买失败，请重新处理");
         }
     }
 
+    private static void goToComment(Role role){
+        RoleService roleService = new RoleServiceImpl();
+        List<Comment> comments = roleService.selectAllComment();
+
+        System.out.println("评论ID\t\t\t" + "用户ID\t\t\t" + "商品名称\t\t\t" + "评论内容\t\t\t"
+                + "订单状态");
+        for (Comment comment : comments) {
+            System.out.println(comment.toString());
+        }
+    }
 
 }

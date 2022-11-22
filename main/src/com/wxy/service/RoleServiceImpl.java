@@ -1,6 +1,7 @@
 package com.wxy.service;
 
 import com.wxy.bean.Cart;
+import com.wxy.bean.Comment;
 import com.wxy.bean.Product;
 import com.wxy.bean.Role;
 import com.wxy.dao.RoleDao;
@@ -46,6 +47,11 @@ public class RoleServiceImpl implements RoleService{
     public List<Cart> selectAllCarts() {
 
         return roleDao.selectAllCarts();
+    }
+
+    @Override
+    public List<Comment> selectAllComment() {
+        return roleDao.selectAllComments();
     }
 
 

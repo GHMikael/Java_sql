@@ -1,6 +1,7 @@
 package com.wxy.dao;
 
 import com.wxy.bean.Cart;
+import com.wxy.bean.Comment;
 import com.wxy.bean.Role;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface RoleDao {
     int dealCartAndIndent(int user_id, int productId);
 
     List<Cart> selectAllCarts();
+
+    List<Comment> selectAllComments();
 }

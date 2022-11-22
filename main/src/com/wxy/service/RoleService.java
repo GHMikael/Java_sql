@@ -1,6 +1,7 @@
 package com.wxy.service;
 
 import com.wxy.bean.Cart;
+import com.wxy.bean.Comment;
 import com.wxy.bean.Product;
 import com.wxy.bean.Role;
 
@@ -15,4 +16,6 @@ public interface RoleService {
     int clearCart(int r_id, int productId);
 
     List<Cart> selectAllCarts();
+
+    List<Comment> selectAllComment();
 }
