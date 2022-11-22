@@ -62,12 +62,10 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Cart{" +
-                "cart_id=" + cart_id +
-                ", user_id=" + user_id +
-                ", pro_id=" + pro_id +
-                ", cart_money=" + cart_money +
-                ", cart_time=" + cart_time +
-                '}';
+        return cart_id +
+                "\t\t\t" + user_id +
+                "\t\t\t" + pro_id +
+                "\t\t\t" + cart_money +
+                "\t\t\t" + cart_time;
     }
 }

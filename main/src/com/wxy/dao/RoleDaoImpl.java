@@ -1,5 +1,6 @@
 package com.wxy.dao;
 
+import com.wxy.bean.Cart;
 import com.wxy.bean.Product;
 import com.wxy.bean.Role;
 import com.wxy.utils.JdbcUtils;
@@ -61,7 +62,10 @@ public class RoleDaoImpl implements RoleDao {
             if (!rs.next()) {
                 System.out.println("用户名密码错误");
             } else {
+                role.setR_id(rs.getInt(1));
                 role.setR_name(rs.getString(2));
+                role.setR_username(rs.getString(3));
+                role.setR_password(rs.getString(4));
                 role.setPower_id(rs.getInt(5));
             }
         } catch (SQLException e) {
@@ -103,16 +107,34 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public int insertCartById(int productId, int user_id) {
         conn = JdbcUtils.getConnection();
+        int price = 10;
+        //根据商品ID得到商品的具体价格
+        //改写成字符串连接，完成SQL语句的查询
+        String sql0 = "select pro_price from product where pro_id = "+productId;
+        //执行sql语句
+        try {
+            ps = conn.prepareStatement(sql0);
+            //问题：此处使用ps传参，报SQL语句出错，很奇怪
+            //ps.setInt(1,productId);
+            rs = ps.executeQuery(sql0);
+            while (rs.next()) {
+                price = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         int res = 0;
         Date date = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        String sql = "insert into cart(user_id,pro_id,cart_time) VALUES(?,?,?)";
+        String sql = "insert into cart(user_id,pro_id,cart_time,cart_money) VALUES(?,?,?,?)";
         try {
             ps = conn.prepareStatement(sql);
             ps.setInt(1, user_id);
             ps.setInt(2, productId);
             ps.setString(3, df.format(date));
+            ps.setInt(4, price);
 
             res = ps.executeUpdate();
         } catch (SQLException e) {
@@ -151,8 +173,8 @@ public class RoleDaoImpl implements RoleDao {
 
 //                生成订单，然后清除购物车
                 Date date = new Date();
-                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
-                ind_id = UUID.randomUUID() + df.format(date);
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
+                ind_id = df.format(date);
                 String sql1 = "insert into indent(ind_id,user_id,ind_money,ind_state) values(?,?,?,?)";
                 ps = conn.prepareStatement(sql1);
 
@@ -179,6 +201,35 @@ public class RoleDaoImpl implements RoleDao {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public List<Cart> selectAllCarts() {
+        conn = JdbcUtils.getConnection();
+        //创建集合存放数据
+        List carts = new ArrayList<>();
+        //编写数据库语句
+        String sql = "select * from cart";
+
+        //执行sql语句
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery(sql);
+            while (rs.next()) {
+                Cart cart = new Cart();
+                cart.setCart_id(rs.getInt(1));
+                cart.setUser_id(rs.getInt(2));
+                cart.setPro_id(rs.getInt(3));
+                cart.setCart_money(rs.getDouble(4));
+                cart.setCart_time(rs.getTimestamp(5));
+                carts.add(cart);
+
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return carts;
     }
 
 }

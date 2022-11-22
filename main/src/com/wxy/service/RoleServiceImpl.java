@@ -1,5 +1,6 @@
 package com.wxy.service;
 
+import com.wxy.bean.Cart;
 import com.wxy.bean.Product;
 import com.wxy.bean.Role;
 import com.wxy.dao.RoleDao;
@@ -39,6 +40,12 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public int clearCart(int r_id, int productId) {
         return roleDao.dealCartAndIndent(r_id,productId);
+    }
+
+    @Override
+    public List<Cart> selectAllCarts() {
+
+        return roleDao.selectAllCarts();
     }
 
 

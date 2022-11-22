@@ -1,10 +1,11 @@
 package com.wxy;
 
+import com.wxy.bean.Cart;
 import com.wxy.bean.Product;
 import com.wxy.bean.Role;
 import com.wxy.service.RoleService;
 import com.wxy.service.RoleServiceImpl;
-import org.junit.Before;
+
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,7 +67,7 @@ public class main {
         }
 
         //加入购物车
-        System.out.println("1、添加购物车  2、前往下单");
+        System.out.println("1、添加购物车  2、清空购物车");
         int i = sc.nextInt();
         if (i == 1){
             //        加入购物车
@@ -84,17 +85,25 @@ public class main {
         //加入购物车
         RoleService roleService = new RoleServiceImpl();
         Scanner sc = new Scanner(System.in);
-        System.out.println("-----------请选择心仪的商品---------------");
+        System.out.println("-----------请选择喜欢的商品---------------");
         System.out.print("请输入商品ID：");
         int productId = sc.nextInt();
         int res = roleService.insertCart(productId,role.getR_id());
         if (res >= 1 ){
             System.out.println("添加成功");
-            System.out.println("1、继续添加商品  2、前往下单");
+            //显示购物车的商品：
+            System.out.println("购物车已有的商品：");
+            List<Cart> carts = roleService.selectAllCarts();
+            System.out.println("购物车ID\t\t\t" + "用户ID\t\t\t" + "商品ID\t\t\t" + "购物车价格\t\t\t"
+                    +  "购物时间");
+            for (Cart cart : carts) {
+                System.out.println(cart.toString());
+            }
+
+            System.out.println("1、继续选择商品  2、清空购物车");
             int i = sc.nextInt();
             switch (i){
                 case 1:
-//                    已经加入购物车内容，可以显示出来
                     addCart(role);
                     break;
                 case 2:
@@ -113,10 +122,10 @@ public class main {
 
         int clearRes = roleService.clearCart(role.getR_id(),productId);
         if (clearRes>0){
-            System.out.println("下单成功，订单号为：" + 122222222);
+            System.out.println("购买成功，订单号为：" + productId);
 //            如果需要打印订单号 ，根据user_id查询订单表，获取订单信息
         }else {
-            System.out.println("下单失败，请重新处理");
+            System.out.println("购买失败，请重新处理");
         }
     }
 
