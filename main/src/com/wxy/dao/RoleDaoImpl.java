@@ -4,6 +4,8 @@ import com.wxy.bean.Cart;
 import com.wxy.bean.Comment;
 import com.wxy.bean.Product;
 import com.wxy.bean.Role;
+import com.wxy.service.RoleService;
+import com.wxy.service.RoleServiceImpl;
 import com.wxy.utils.JdbcUtils;
 
 import java.sql.Connection;
@@ -258,6 +260,40 @@ public class RoleDaoImpl implements RoleDao {
             e.printStackTrace();
         }
         return comments;
+    }
+
+    @Override
+    public int insertComment(int commentId, int r_id ,String content) {
+        conn = JdbcUtils.getConnection();
+        String product_name = "";
+        String states = "";
+        RoleService roleService = new RoleServiceImpl();
+        List<Product> products = roleService.selectAllProduct();
+        for (Product product: products) {
+            product_name = product.getPro_name();
+            states = "已购买";
+        }
+
+        int res = 0;
+        Date date = new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String sql = "insert into comment(id, role_id, product_name, content, states) VALUES(?,?,?,?,?)";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, commentId);
+            ps.setInt(2, r_id);
+            ps.setString(3, product_name);
+            ps.setString(4, content);
+            ps.setString(5,states);
+
+            res = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return res;
+
     }
 
 }

@@ -18,4 +18,6 @@ public interface RoleDao {
     List<Cart> selectAllCarts();
 
     List<Comment> selectAllComments();
+
+    int insertComment(int commentId, int r_id ,String content) ;
 }

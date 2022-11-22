@@ -54,5 +54,10 @@ public class RoleServiceImpl implements RoleService{
         return roleDao.selectAllComments();
     }
 
+    @Override
+    public int insertComment(int commentId, int r_id,String content) {
+        return roleDao.insertComment(commentId,r_id,content);
+    }
+
 
 }

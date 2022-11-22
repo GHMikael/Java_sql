@@ -18,4 +18,6 @@ public interface RoleService {
     List<Cart> selectAllCarts();
 
     List<Comment> selectAllComment();
+
+    int insertComment(int commentId, int r_id,String content);
 }

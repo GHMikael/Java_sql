@@ -50,12 +50,10 @@ public class Role {
 
     @Override
     public java.lang.String toString() {
-        return "Role{" +
-                "r_id=" + r_id +
-                ", r_name='" + r_name + '\'' +
-                ", r_username='" + r_username + '\'' +
-                ", r_password='" + r_password + '\'' +
-                ", power_id='" + power_id + '\'' +
-                '}';
+        return r_id +
+                "\t\t\t" + r_name +
+                "\t\t\t" + r_username +
+                "\t\t\t" + r_password +
+                "\t\t\t" + power_id;
     }
 }
